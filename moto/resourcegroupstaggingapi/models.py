@@ -699,6 +699,17 @@ class ResourceGroupsTaggingAPIBackend(BaseBackend):
     # that governs the resource, that way if the target module
     # changes how tags are delt with theres less to change
 
+    def tag_resources(self, resource_arn_list, tags):
+        ec2_resources = list(filter(lambda r: 'arn:aws:ec2', resource_arn_list))
+
+        for ec2_arn in ec2_resources:
+            instance_id = ec2_arn.split(':instance/')[1]
+            instance = self.ec2_backend.get_instance(instance_id)
+            res = instance.add_tags(tags)
+            import code; code.interact(local=dict(globals(), **locals()))
+
+        return {}
+
     # def tag_resources(self, resource_arn_list, tags):
     #     return failed_resources_map
     #
